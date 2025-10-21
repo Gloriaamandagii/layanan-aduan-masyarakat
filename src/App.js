@@ -20,7 +20,7 @@ function App() {
     <div className="App">
       {/* Header */}
       <header className="navbar">
-        <h1 className="logo">Aduan Masyarakat</h1>
+        <h1 className="logo">E-Aduan Masyarakat</h1>
         <nav>
           <a href="#home">Beranda</a>
           <a href="#aduan">Kirim Aduan</a>
