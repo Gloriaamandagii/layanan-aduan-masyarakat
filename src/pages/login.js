@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import { Shield, User, Lock, AlertCircle, Eye, EyeOff } from "lucide-react";
+import { loginWithRealtimeUsers } from "../config/firebase"; // 🔥 koneksi ke Firebase
+import { useNavigate } from "react-router-dom";
 
 function Login() {
   const [username, setUsername] = useState("");
@@ -8,28 +10,39 @@ function Login() {
   const [error, setError] = useState("");
   const [showPassword, setShowPassword] = useState(false);
 
-  const handleLogin = (e) => {
+  const navigate = useNavigate();
+
+  const handleLogin = async (e) => {
     e.preventDefault();
     setError("");
     setLoading(true);
 
-    // Simulasi login - ganti dengan loginWithRealtimeUsers di kode asli
-    setTimeout(() => {
-      if (username === "demo" && password === "demo123") {
-        alert("✅ Login berhasil!");
-        setLoading(false);
-      } else {
-        setError("Username atau password salah");
-        setLoading(false);
+    try {
+      // 🔥 Gunakan fungsi login dari Firebase
+      const user = await loginWithRealtimeUsers(username, password);
+
+      if (!user) {
+        throw new Error("User tidak ditemukan di database.");
       }
-    }, 1500);
+
+      // Simpan user ke localStorage (autentikasi sederhana)
+      localStorage.setItem("user", JSON.stringify(user));
+
+      alert("✅ Login berhasil!");
+      navigate("/"); // arahkan ke halaman utama
+    } catch (err) {
+      console.error("Login Error:", err);
+      setError(err.message || "Username atau password salah");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
     <div style={styles.loginPage}>
       <div style={styles.bgCircle1}></div>
       <div style={styles.bgCircle2}></div>
-      
+
       <div style={styles.loginContainer}>
         <div style={styles.logoSection}>
           <div style={styles.logoCircle}>
@@ -41,7 +54,7 @@ function Login() {
           </p>
         </div>
 
-        <div style={styles.formContainer}>
+        <form onSubmit={handleLogin} style={styles.formContainer}>
           <div style={styles.inputGroup}>
             <label style={styles.label}>Username</label>
             <div style={styles.inputWrapper}>
@@ -52,8 +65,14 @@ function Login() {
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
                 style={styles.input}
-                onFocus={(e) => e.target.style.borderColor = "#1b4cfb"}
-                onBlur={(e) => e.target.style.borderColor = "rgba(211, 217, 243, 0.8)"}
+                onFocus={(e) =>
+                  (e.target.style.borderColor = "#1b4cfb")
+                }
+                onBlur={(e) =>
+                  (e.target.style.borderColor =
+                    "rgba(211, 217, 243, 0.8)")
+                }
+                required
               />
             </div>
           </div>
@@ -68,15 +87,19 @@ function Login() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 style={styles.input}
-                onFocus={(e) => e.target.style.borderColor = "#1b4cfb"}
-                onBlur={(e) => e.target.style.borderColor = "rgba(211, 217, 243, 0.8)"}
+                onFocus={(e) =>
+                  (e.target.style.borderColor = "#1b4cfb")
+                }
+                onBlur={(e) =>
+                  (e.target.style.borderColor =
+                    "rgba(211, 217, 243, 0.8)")
+                }
+                required
               />
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
                 style={styles.eyeButton}
-                onMouseEnter={(e) => e.target.style.opacity = "1"}
-                onMouseLeave={(e) => e.target.style.opacity = "0.7"}
               >
                 {showPassword ? (
                   <EyeOff size={20} color="#6b7280" />
@@ -88,25 +111,11 @@ function Login() {
           </div>
 
           <button
-            onClick={handleLogin}
+            type="submit"
             disabled={loading}
             style={{
               ...styles.loginBtn,
               ...(loading ? styles.loginBtnDisabled : {}),
-            }}
-            onMouseEnter={(e) => {
-              if (!loading) {
-                e.target.style.background = "linear-gradient(135deg, #0036d3, #5a3dff)";
-                e.target.style.transform = "translateY(-2px)";
-                e.target.style.boxShadow = "0 10px 30px rgba(27, 76, 251, 0.4)";
-              }
-            }}
-            onMouseLeave={(e) => {
-              if (!loading) {
-                e.target.style.background = "linear-gradient(135deg, #1b4cfb, #6a5bff)";
-                e.target.style.transform = "translateY(0)";
-                e.target.style.boxShadow = "0 6px 20px rgba(27, 76, 251, 0.3)";
-              }
             }}
           >
             {loading ? (
@@ -127,34 +136,48 @@ function Login() {
           )}
 
           <div style={styles.extraLinks}>
-            <a 
-              href="#" 
-              style={styles.forgotLink}
-              onMouseEnter={(e) => e.target.style.textDecoration = "underline"}
-              onMouseLeave={(e) => e.target.style.textDecoration = "none"}
+            <button
+              type="button"
+              onClick={() => navigate('/resetpassword')}
+              style={{
+                ...styles.forgotLink,
+                background: 'none',
+                border: 'none',
+                padding: 0,
+                cursor: 'pointer',
+                font: 'inherit'
+              }}
             >
               Lupa password?
-            </a>
+            </button>
           </div>
-        </div>
+        </form>
 
         <div style={styles.footer}>
           <p style={styles.footerText}>
             Belum punya akun?{" "}
-            <a 
-              href="#" 
-              style={styles.registerLink}
-              onMouseEnter={(e) => e.target.style.textDecoration = "underline"}
-              onMouseLeave={(e) => e.target.style.textDecoration = "none"}
+            <button
+              type="button"
+              onClick={() => navigate("/signup")}
+              style={{
+                ...styles.registerLink,
+                background: "none",
+                border: "none",
+                padding: 0,
+                cursor: "pointer",
+                font: "inherit",
+              }}
             >
               Daftar sekarang
-            </a>
+            </button>
           </p>
         </div>
       </div>
     </div>
   );
 }
+
+// ==================== STYLE ==================== //
 
 const styles = {
   loginPage: {
