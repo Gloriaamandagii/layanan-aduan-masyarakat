@@ -6,7 +6,7 @@ function Dashboard() {
   return (
     <div className="dashboard-container">
       <header className="dashboard-header">
-        <h2>Layanan Aduan Masyarakat Peleloan</h2>
+        <h2>Layanan Aduan Masyarakat</h2>
         <div className="user-info">
           <FaUser className="user-icon" />
           <div>
