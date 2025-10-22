@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import "../assets/css/signup.css";
-import { FaUser, FaEnvelope, FaLock } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 
 function Signup() {
@@ -42,7 +41,6 @@ function Signup() {
         <h2>Buat Akun Baru</h2>
         <form onSubmit={handleSubmit}>
           <div className="input-group">
-            <FaUser className="input-icon" />
             <input
               type="text"
               name="nama"
@@ -54,7 +52,6 @@ function Signup() {
           </div>
 
           <div className="input-group">
-            <FaEnvelope className="input-icon" />
             <input
               type="email"
               name="email"
@@ -66,7 +63,6 @@ function Signup() {
           </div>
 
           <div className="input-group">
-            <FaUser className="input-icon" />
             <input
               type="text"
               name="username"
@@ -78,7 +74,6 @@ function Signup() {
           </div>
 
           <div className="input-group">
-            <FaLock className="input-icon" />
             <input
               type="password"
               name="password"
@@ -90,7 +85,6 @@ function Signup() {
           </div>
 
           <div className="input-group">
-            <FaLock className="input-icon" />
             <input
               type="password"
               name="confirmPassword"

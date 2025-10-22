@@ -1,122 +1,127 @@
 body {
-  margin: 0;
   font-family: "Poppins", sans-serif;
-  background: linear-gradient(180deg, #eef5ff 0%, #f8fbff 100%);
-  color: #333;
+  background-color: #eaf2ff;
+  margin: 0;
+  padding: 0;
 }
 
+/* Navbar */
 .navbar {
+  background: white;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 18px 60px;
-  background: #ffffff;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+  padding: 15px 50px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
   position: sticky;
   top: 0;
-  z-index: 1000;
+  z-index: 10;
 }
 
 .logo {
+  font-size: 1.3rem;
   font-weight: 700;
   color: #1b4cfb;
-  font-size: 20px;
 }
 
 .nav-links {
-  list-style: none;
   display: flex;
-  gap: 25px;
+  list-style: none;
+  gap: 30px;
 }
 
 .nav-links a {
   text-decoration: none;
   color: #333;
   font-weight: 500;
-  transition: color 0.3s ease;
 }
 
 .nav-links a:hover {
   color: #1b4cfb;
 }
 
+/* Tombol Masuk & Daftar - versi profesional dan simetris */
+.auth-buttons {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.login-btn,
+.signup-btn {
+  text-decoration: none;
+  padding: 8px 18px;
+  border-radius: 8px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  font-size: 0.95rem;
+}
+
+.login-btn {
+  border: 2px solid #1b4cfb;
+  color: #1b4cfb;
+  background: transparent;
+}
+
+.login-btn:hover {
+  background: #1b4cfb;
+  color: #fff;
+}
+
+.signup-btn {
+  background-color: #1b4cfb;
+  color: white;
+  border: 2px solid #1b4cfb;
+}
+
+.signup-btn:hover {
+  background-color: #0036d3;
+}
+
+/* Hero Section */
 .hero-section {
-  background: linear-gradient(120deg, #1b4cfb, #4785ff);
+  background: linear-gradient(180deg, #1b4cfb 0%, #3d6aff 100%);
   color: white;
   text-align: center;
   padding: 80px 20px;
+  border-radius: 0 0 40px 40px;
 }
 
-.hero-section h1 {
-  font-size: 32px;
-  margin-bottom: 15px;
-}
-
-.hero-section p {
-  font-size: 17px;
-  max-width: 600px;
-  margin: 0 auto 25px;
-}
-
-.cta-button {
-  background: white;
-  color: #1b4cfb;
-  padding: 12px 25px;
-  border-radius: 25px;
-  font-weight: 600;
-  text-decoration: none;
-  transition: 0.3s;
-}
-
-.cta-button:hover {
-  background: #eaf0ff;
-}
-
-.info-section {
-  padding: 60px 80px;
-  text-align: center;
-  background: #f9fcff;
-}
-
-.info-cards {
-  display: flex;
-  justify-content: center;
-  flex-wrap: wrap;
-  gap: 25px;
-  margin-top: 30px;
-}
-
-.info-card {
-  background: white;
-  border-radius: 15px;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
-  padding: 25px;
-  width: 300px;
-  transition: transform 0.3s ease;
-}
-
-.info-card:hover {
-  transform: translateY(-5px);
-}
-
-.info-card h3 {
-  color: #1b4cfb;
+.hero-content h1 {
+  font-size: 2rem;
   margin-bottom: 10px;
 }
 
+.hero-content p {
+  font-size: 1rem;
+  max-width: 600px;
+  margin: 0 auto 20px auto;
+}
+
+.hero-button {
+  background: white;
+  color: #1b4cfb;
+  padding: 10px 20px;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+/* Form Aduan */
 .form-section {
-  background: #eef4ff;
-  padding: 70px 20px;
-  text-align: center;
+  display: flex;
+  justify-content: center;
+  padding: 60px 20px;
 }
 
 .form-container {
   background: white;
-  max-width: 550px;
-  margin: auto;
-  border-radius: 20px;
-  padding: 40px;
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+  padding: 30px 40px;
+  border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 500px;
+  text-align: center;
 }
 
 .form-container h2 {
@@ -124,45 +129,211 @@ body {
   margin-bottom: 10px;
 }
 
-form input,
-form select,
-form textarea {
+.form-container input,
+.form-container select,
+.form-container textarea {
   width: 100%;
-  padding: 12px;
-  margin-top: 12px;
-  border-radius: 10px;
-  border: 1px solid #ccd7ff;
+  padding: 10px;
+  margin: 8px 0;
+  border-radius: 8px;
+  border: 1px solid #ddd;
   font-size: 14px;
-  outline: none;
-}
-
-form textarea {
-  height: 120px;
-  resize: none;
 }
 
 .submit-button {
-  margin-top: 20px;
-  width: 100%;
   background: #1b4cfb;
   color: white;
+  padding: 10px 15px;
   border: none;
-  padding: 12px;
-  border-radius: 10px;
-  font-weight: 600;
+  border-radius: 8px;
   cursor: pointer;
-  transition: background 0.3s ease;
+  font-weight: 600;
+  margin-top: 10px;
 }
 
 .submit-button:hover {
   background: #0036d3;
 }
 
+/* Footer */
 footer {
-  background: white;
   text-align: center;
   padding: 20px;
-  color: #666;
   font-size: 14px;
-  border-top: 1px solid #eaeaea;
+  color: #555;
+}
+
+/* ======== CHATBOT STYLE (Versi lebih besar & profesional) ======== */
+.chatbot-wrapper {
+  position: fixed;
+  bottom: 25px;
+  right: 25px;
+  z-index: 999;
+}
+
+/* Floating chat icon */
+.chatbot-fab {
+  background: #1b4cfb;
+  color: #fff;
+  border: none;
+  border-radius: 50%;
+  width: 60px;
+  height: 60px;
+  font-size: 1.4rem;
+  cursor: pointer;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.15);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.chatbot-fab:hover {
+  transform: scale(1.08);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.25);
+}
+
+/* Chatbox */
+.chatbot-box {
+  width: 380px;
+  height: 480px;
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.25);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+.chatbot-header {
+  background: linear-gradient(90deg, #1b4cfb, #3d6aff);
+  color: #fff;
+  font-weight: 600;
+  padding: 14px 18px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.chatbot-header .close-btn {
+  background: transparent;
+  border: none;
+  font-size: 1.2rem;
+  color: #fff;
+  cursor: pointer;
+}
+
+.chatbot-body {
+  flex: 1;
+  padding: 18px;
+  background: #f9fafb;
+  overflow-y: auto;
+}
+
+.placeholder-text {
+  color: #555;
+  text-align: center;
+  margin-top: 100px;
+}
+
+.chatbot-input {
+  display: flex;
+  border-top: 1px solid #e5e7eb;
+  padding: 10px;
+  background: #fff;
+}
+
+.chatbot-input input {
+  flex: 1;
+  border: none;
+  outline: none;
+  padding: 8px 10px;
+  border-radius: 8px;
+  background: #f3f4f6;
+}
+
+.chatbot-input button {
+  background: #1b4cfb;
+  color: #fff;
+  border: none;
+  margin-left: 8px;
+  padding: 8px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background 0.3s ease;
+}
+
+.chatbot-input button:hover {
+  background: #0036d3;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ======== Informasi Umum Section (Tampilan Profesional) ======== */
+.info-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 80px 20px;
+  background-color: #eaf2ff;
+}
+
+.info-section h2 {
+  color: #1b4cfb;
+  font-size: 1.8rem;
+  margin-bottom: 10px;
+  font-weight: 700;
+}
+
+.info-desc {
+  color: #333;
+  max-width: 750px;
+  text-align: center;
+  margin-bottom: 50px;
+  font-size: 1rem;
+  line-height: 1.6;
+}
+
+/* Grid responsif untuk kartu */
+.info-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 25px;
+  width: 100%;
+  max-width: 1000px;
+}
+
+/* Kartu Informasi */
+.info-card {
+  background: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+  padding: 25px 30px;
+  transition: all 0.3s ease;
+}
+
+.info-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+}
+
+.info-card h3 {
+  font-size: 1.2rem;
+  color: #1b4cfb;
+  margin-bottom: 10px;
+}
+
+.info-card p {
+  font-size: 0.95rem;
+  color: #444;
+  line-height: 1.6;
+  text-align: justify;
 }

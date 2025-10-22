@@ -1,160 +1,96 @@
-/* Elegant Minimalist Login Page - Gloria Mandagi Edition 💎 */
-
-@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap");
-
-* {
+body {
+  font-family: "Poppins", sans-serif;
+  background-color: #eaf2ff;
   margin: 0;
   padding: 0;
-  box-sizing: border-box;
-  font-family: "Inter", sans-serif;
 }
 
-body {
-  background: linear-gradient(135deg, #d7e9ff, #b5d2ff);
+/* Container utama */
+.login-page {
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100vh;
+  min-height: 100vh;
 }
 
-/* Container */
 .login-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  background: white;
+  padding: 40px 50px;
+  border-radius: 16px;
+  box-shadow: 0 6px 25px rgba(0, 0, 0, 0.1);
   width: 100%;
-}
-
-/* Login Box (diperbesar) */
-.login-box {
-  background: #ffffff;
-  border-radius: 20px;
-  padding: 3rem 2.5rem;
-  width: 440px; /* sebelumnya 380px */
-  box-shadow: 0 10px 35px rgba(90, 135, 255, 0.22);
-  transition: all 0.3s ease;
+  max-width: 420px;
   text-align: center;
 }
 
-.login-box:hover {
-  box-shadow: 0 12px 40px rgba(70, 120, 255, 0.25);
-  transform: translateY(-3px);
+.login-container h2 {
+  color: #1b4cfb;
+  margin-bottom: 8px;
+  font-size: 1.6rem;
 }
 
-/* Title */
-.login-box h2 {
-  color: #1e3a8a;
-  font-size: 22px;
-  font-weight: 600;
-  margin-bottom: 2rem;
-  letter-spacing: 0.5px;
+.subtitle {
+  color: #666;
+  font-size: 0.9rem;
+  margin-bottom: 25px;
 }
 
-/* Input Fields (diperbesar) */
+/* Input group */
 .input-group {
-  position: relative;
-  margin-bottom: 1.2rem;
+  text-align: left;
+  margin-bottom: 18px;
 }
 
-.input-group input,
-.input-group select {
-  width: 100%;
-  padding: 14px 50px; /* lebih lega dari sebelumnya */
-  border: 1.5px solid #d0d8f0;
-  border-radius: 12px;
-  background: #f9fbff;
+.input-group label {
+  display: block;
+  font-weight: 600;
   color: #333;
-  font-size: 15px;
-  transition: all 0.25s ease;
+  margin-bottom: 6px;
 }
 
-.input-group input:focus,
-.input-group select:focus {
+.input-group input {
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
   outline: none;
-  border-color: #4f83ff;
-  background: #ffffff;
-  box-shadow: 0 0 0 3px rgba(79, 131, 255, 0.1);
+  transition: 0.3s;
+  font-size: 0.95rem;
 }
 
-.input-icon {
-  position: absolute;
-  top: 13px;
-  left: 16px;
-  color: #4f83ff;
-  font-size: 18px;
+.input-group input:focus {
+  border-color: #1b4cfb;
+  box-shadow: 0 0 5px rgba(27, 76, 251, 0.2);
 }
 
-.toggle-password {
-  position: absolute;
-  right: 16px;
-  top: 13px;
-  color: #7b8bbd;
-  cursor: pointer;
-  font-size: 17px;
-  transition: color 0.3s ease;
-}
-
-.toggle-password:hover {
-  color: #4f83ff;
-}
-
-/* Button */
+/* Tombol Masuk */
 .login-btn {
   width: 100%;
-  padding: 14px;
+  background-color: #1b4cfb;
+  color: white;
   border: none;
-  border-radius: 12px;
-  background: linear-gradient(135deg, #4f83ff, #75a5ff);
-  color: #fff;
+  padding: 12px;
+  border-radius: 8px;
   font-weight: 600;
-  letter-spacing: 0.5px;
   cursor: pointer;
-  margin-top: 0.5rem;
-  font-size: 15px;
-  transition: all 0.3s ease;
+  transition: background 0.3s ease;
 }
 
 .login-btn:hover {
-  background: linear-gradient(135deg, #3b6cf6, #5d91ff);
-  transform: translateY(-1px);
+  background-color: #0036d3;
 }
 
-/* Error Message */
-.error-text {
-  color: #e74c3c;
-  font-size: 13px;
-  margin-bottom: 10px;
-  text-align: left;
+/* Lupa password */
+.extra-links {
+  margin-top: 15px;
 }
 
-/* Forgot Password */
-.link-btn {
-  background: none;
-  border: none;
-  color: #5d6fa6;
-  cursor: pointer;
-  font-size: 13px;
-  margin-top: 14px;
-  transition: 0.3s ease;
+.forgot-link {
+  color: #1b4cfb;
+  text-decoration: none;
+  font-size: 0.9rem;
 }
 
-.link-btn:hover {
-  color: #3b6cf6;
+.forgot-link:hover {
   text-decoration: underline;
-}
-
-/* Animation */
-@keyframes slideUp {
-  from {
-    opacity: 0;
-    transform: translateY(15px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.login-box {
-  animation: slideUp 0.6s ease forwards;
 }

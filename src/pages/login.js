@@ -1,59 +1,29 @@
 import React, { useState } from "react";
 import "../assets/css/login.css";
-import { FaUser, FaLock, FaBuilding, FaEye, FaEyeSlash } from "react-icons/fa";
-import { useNavigate } from "react-router-dom";
 
-function LoginForm({ onLogin }) {
-  const navigate = useNavigate();
-
-  const [role, setRole] = useState("ADMIN");
+function Login() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [showPassword, setShowPassword] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
 
-  const togglePasswordVisibility = () => {
-    setShowPassword(!showPassword);
-  };
-
-  const handleSubmit = async (e) => {
+  const handleLogin = (e) => {
     e.preventDefault();
-    setLoading(true);
-    setError("");
-
-    // simulasi login
-    setTimeout(() => {
-      setLoading(false);
-      if (username === "admin" && password === "123") {
-        alert("Login berhasil!");
-        if (onLogin) onLogin();
-        navigate("/dashboard"); // ✅ langsung pindah ke dashboard
-      } else {
-        setError("Username atau password salah!");
-      }
-    }, 1000);
+    console.log("Login:", { username, password });
   };
 
   return (
-    <div className="login-container">
-      <div className="login-box">
-        <h2>Dashboard Kelurahan Peleloan</h2>
-        <form onSubmit={handleSubmit}>
-          <div className="input-group">
-            <FaBuilding className="input-icon" />
-            <select value={role} onChange={(e) => setRole(e.target.value)}>
-              <option value="ADMIN">ADMIN</option>
-              <option value="LURAH">LURAH</option>
-              <option value="PETUGAS">PETUGAS</option>
-            </select>
-          </div>
+    <div className="login-page">
+      <div className="login-container">
+        <h2>Masuk ke Akun Anda</h2>
+        <p className="subtitle">
+          Selamat datang kembali di E-Aduan Masyarakat Indonesia
+        </p>
 
+        <form onSubmit={handleLogin}>
           <div className="input-group">
-            <FaUser className="input-icon" />
+            <label>Username</label>
             <input
               type="text"
-              placeholder="USERNAME"
+              placeholder="Masukkan username Anda"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
               required
@@ -61,37 +31,24 @@ function LoginForm({ onLogin }) {
           </div>
 
           <div className="input-group">
-            <FaLock className="input-icon" />
+            <label>Password</label>
             <input
-              type={showPassword ? "text" : "password"}
-              placeholder="PASSWORD"
+              type="password"
+              placeholder="Masukkan password Anda"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
             />
-            <span
-              className="toggle-password"
-              onClick={togglePasswordVisibility}
-            >
-              {showPassword ? <FaEyeSlash /> : <FaEye />}
-            </span>
           </div>
 
-          {error && <p className="error-text">{error}</p>}
-
-          <button type="submit" className="login-btn" disabled={loading}>
-            {loading ? "Loading..." : "LOGIN"}
+          <button type="submit" className="login-btn">
+            Masuk
           </button>
 
-          {/* ✅ PERBAIKAN BAGIAN WARNING */}
-          <div className="forgot">
-            <button
-              type="button"
-              className="forgot-link"
-              onClick={() => alert("Fitur lupa password belum aktif.")}
-            >
-              Forgot password?
-            </button>
+          <div className="extra-links">
+            <a href="/forgot-password" className="forgot-link">
+              Lupa password?
+            </a>
           </div>
         </form>
       </div>
@@ -99,4 +56,4 @@ function LoginForm({ onLogin }) {
   );
 }
 
-export default LoginForm;
+export default Login;
