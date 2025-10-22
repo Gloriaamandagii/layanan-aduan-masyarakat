@@ -1,5 +1,8 @@
 import React, { useState } from "react";
 import { UserPlus, User, Mail, Lock, Eye, EyeOff, AlertCircle, CheckCircle, Phone } from "lucide-react";
+import { database } from "../config/firebase.js";
+import { ref, set } from "firebase/database";
+import { useNavigate } from "react-router-dom";
 
 function Signup() {
   const [formData, setFormData] = useState({
@@ -65,12 +68,32 @@ function Signup() {
     }
 
     setLoading(true);
-    setTimeout(() => {
-      setLoading(false);
-      alert("✅ Pendaftaran berhasil! Silakan login.");
-      // navigate("/") - uncomment di kode asli
-    }, 1500);
+    // prepare user object to save
+    const userObj = {
+      nama: formData.nama,
+      email: formData.email,
+      nomorHp: formData.nomorHp,
+      password: formData.password,
+      jenisKelamin: formData.jenisKelamin || "",
+      alamat: formData.alamat || "",
+    };
+
+    // write to Realtime Database under /users/{username}
+    const userRef = ref(database, `users/${formData.username}`);
+    set(userRef, userObj)
+      .then(() => {
+        setLoading(false);
+        alert("✅ Pendaftaran berhasil! Silakan login.");
+        navigate("/login");
+      })
+      .catch((err) => {
+        console.error("Signup save error:", err);
+        setLoading(false);
+        setError("Gagal menyimpan data. Coba lagi.");
+      });
   };
+
+  const navigate = useNavigate();
 
   return (
     <div style={styles.signupPage}>
