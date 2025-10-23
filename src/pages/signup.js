@@ -1,14 +1,24 @@
 import React, { useState } from "react";
-import { UserPlus, User, Mail, Lock, Eye, EyeOff, AlertCircle, CheckCircle, Phone } from "lucide-react";
+import {
+  UserPlus,
+  User,
+  Mail,
+  Lock,
+  Eye,
+  EyeOff,
+  AlertCircle,
+  CheckCircle,
+  Phone,
+} from "lucide-react";
 import { database } from "../config/firebase.js";
-import { ref, set } from "firebase/database";
+import { ref, set, get, child } from "firebase/database";
 import { useNavigate } from "react-router-dom";
 
 function Signup() {
   const [formData, setFormData] = useState({
     nama: "",
     email: "",
-    username: "",
+    username: "", // optional input; if kosong, akan derive dari nama
     nomorHp: "",
     password: "",
     confirmPassword: "",
@@ -19,9 +29,11 @@ function Signup() {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [passwordStrength, setPasswordStrength] = useState(0);
 
+  const navigate = useNavigate();
+
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
+    setFormData((prev) => ({ ...prev, [name]: value }));
 
     if (name === "password") {
       calculatePasswordStrength(value);
@@ -53,65 +65,96 @@ function Signup() {
     return "Sangat Kuat";
   };
 
-  const handleSubmit = (e) => {
+  const normalizeUsername = (raw) => {
+    if (!raw) return "";
+    return String(raw).trim().toLowerCase().replace(/\s+/g, "");
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
+
+    // basic validations
+    if (!formData.nama) {
+      setError("Nama lengkap wajib diisi.");
+      return;
+    }
+    if (!formData.email) {
+      setError("Email wajib diisi.");
+      return;
+    }
 
     if (formData.password !== formData.confirmPassword) {
       setError("Password dan konfirmasi tidak cocok!");
       return;
     }
-
     if (formData.password.length < 6) {
       setError("Password minimal 6 karakter!");
       return;
     }
 
     setLoading(true);
-    // prepare user object to save
-    const userObj = {
-      nama: formData.nama,
-      email: formData.email,
-      nomorHp: formData.nomorHp,
-      password: formData.password,
-      jenisKelamin: formData.jenisKelamin || "",
-      alamat: formData.alamat || "",
-    };
 
-    // write to Realtime Database under /users/{username}
-    const userRef = ref(database, `users/${formData.username}`);
-    set(userRef, userObj)
-      .then(() => {
+    try {
+      // gunakan username jika diisi, kalau tidak derive dari nama
+      const rawUsername = formData.username ? formData.username : formData.nama;
+      const normalizedUsername = normalizeUsername(rawUsername);
+
+      if (!normalizedUsername) {
+        setError("Username tidak valid. Silakan masukkan username atau nama lengkap yang benar.");
         setLoading(false);
-        alert("✅ Pendaftaran berhasil! Silakan login.");
-        navigate("/login");
-      })
-      .catch((err) => {
-        console.error("Signup save error:", err);
+        return;
+      }
+
+      // cek apakah user sudah ada
+      const dbRef = ref(database);
+      const snapshot = await get(child(dbRef, `users/${normalizedUsername}`));
+      if (snapshot.exists()) {
+        setError("Username sudah digunakan, pilih username lain.");
         setLoading(false);
-        setError("Gagal menyimpan data. Coba lagi.");
-      });
+        return;
+      }
+
+      // siapkan objek user
+      const userObj = {
+        nama: formData.nama,
+        email: formData.email,
+        nomorHp: formData.nomorHp || "",
+        password: formData.password, // pertimbangkan hashing di server / fungsi lain
+        jenisKelamin: formData.jenisKelamin || "",
+        alamat: formData.alamat || "",
+        createdAt: new Date().toISOString(),
+      };
+
+      // tulis ke path /users/{normalizedUsername}
+      const userRef = ref(database, `users/${normalizedUsername}`);
+      await set(userRef, userObj);
+
+      setLoading(false);
+      alert("✅ Pendaftaran berhasil! Silakan login.");
+      navigate("/login");
+    } catch (err) {
+      console.error("Signup save error:", err);
+      setError("Gagal menyimpan data. Coba lagi.");
+      setLoading(false);
+    }
   };
-
-  const navigate = useNavigate();
 
   return (
     <div style={styles.signupPage}>
       <div style={styles.bgCircle1}></div>
       <div style={styles.bgCircle2}></div>
-      
+
       <div style={styles.signupContainer}>
         <div style={styles.logoSection}>
           <div style={styles.logoCircle}>
             <UserPlus size={38} color="#1b4cfb" strokeWidth={2.5} />
           </div>
           <h2 style={styles.title}>Buat Akun Baru</h2>
-          <p style={styles.subtitle}>
-            Bergabunglah dengan E-Aduan Masyarakat Indonesia
-          </p>
+          <p style={styles.subtitle}>Bergabunglah dengan E-Aduan Masyarakat Indonesia</p>
         </div>
 
-        <div style={styles.formContainer}>
+        <form onSubmit={handleSubmit} style={styles.formContainer}>
           {/* Nama Lengkap */}
           <div style={styles.inputGroup}>
             <label style={styles.label}>Nama Lengkap</label>
@@ -125,8 +168,6 @@ function Signup() {
                 onChange={handleChange}
                 required
                 style={styles.input}
-                onFocus={(e) => e.target.style.borderColor = "#1b4cfb"}
-                onBlur={(e) => e.target.style.borderColor = "rgba(211, 217, 243, 0.8)"}
               />
             </div>
           </div>
@@ -144,12 +185,9 @@ function Signup() {
                 onChange={handleChange}
                 required
                 style={styles.input}
-                onFocus={(e) => e.target.style.borderColor = "#1b4cfb"}
-                onBlur={(e) => e.target.style.borderColor = "rgba(211, 217, 243, 0.8)"}
               />
             </div>
           </div>
-
 
           {/* Nomor HP */}
           <div style={styles.inputGroup}>
@@ -162,10 +200,7 @@ function Signup() {
                 placeholder="628xxxxxxx"
                 value={formData.nomorHp}
                 onChange={handleChange}
-                required
                 style={styles.input}
-                onFocus={(e) => e.target.style.borderColor = "#1b4cfb"}
-                onBlur={(e) => e.target.style.borderColor = "rgba(211, 217, 243, 0.8)"}
               />
             </div>
           </div>
@@ -183,23 +218,12 @@ function Signup() {
                 onChange={handleChange}
                 required
                 style={styles.input}
-                onFocus={(e) => e.target.style.borderColor = "#1b4cfb"}
-                onBlur={(e) => e.target.style.borderColor = "rgba(211, 217, 243, 0.8)"}
               />
-              <button
-                type="button"
-                onClick={() => setShowPassword(!showPassword)}
-                style={styles.eyeButton}
-                onMouseEnter={(e) => e.target.style.opacity = "1"}
-                onMouseLeave={(e) => e.target.style.opacity = "0.7"}
-              >
-                {showPassword ? (
-                  <EyeOff size={20} color="#6b7280" />
-                ) : (
-                  <Eye size={20} color="#6b7280" />
-                )}
+              <button type="button" onClick={() => setShowPassword(!showPassword)} style={styles.eyeButton}>
+                {showPassword ? <EyeOff size={20} color="#6b7280" /> : <Eye size={20} color="#6b7280" />}
               </button>
             </div>
+
             {formData.password && (
               <div style={styles.passwordStrength}>
                 <div style={styles.strengthBar}>
@@ -212,9 +236,7 @@ function Signup() {
                   ></div>
                 </div>
                 {passwordStrength > 0 && (
-                  <span style={{...styles.strengthText, color: getPasswordStrengthColor()}}>
-                    {getPasswordStrengthText()}
-                  </span>
+                  <span style={{ ...styles.strengthText, color: getPasswordStrengthColor() }}>{getPasswordStrengthText()}</span>
                 )}
               </div>
             )}
@@ -233,29 +255,20 @@ function Signup() {
                 onChange={handleChange}
                 required
                 style={styles.input}
-                onFocus={(e) => e.target.style.borderColor = "#1b4cfb"}
-                onBlur={(e) => e.target.style.borderColor = "rgba(211, 217, 243, 0.8)"}
               />
               <button
                 type="button"
                 onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                 style={styles.eyeButton}
-                onMouseEnter={(e) => e.target.style.opacity = "1"}
-                onMouseLeave={(e) => e.target.style.opacity = "0.7"}
               >
-                {showConfirmPassword ? (
-                  <EyeOff size={20} color="#6b7280" />
-                ) : (
-                  <Eye size={20} color="#6b7280" />
-                )}
+                {showConfirmPassword ? <EyeOff size={20} color="#6b7280" /> : <Eye size={20} color="#6b7280" />}
               </button>
             </div>
+
             {formData.confirmPassword && formData.password === formData.confirmPassword && (
               <div style={styles.matchIndicator}>
                 <CheckCircle size={16} color="#10b981" />
-                <span style={{color: "#10b981", fontSize: "0.85rem", marginLeft: "6px"}}>
-                  Password cocok
-                </span>
+                <span style={{ color: "#10b981", fontSize: "0.85rem", marginLeft: "6px" }}>Password cocok</span>
               </div>
             )}
           </div>
@@ -269,57 +282,22 @@ function Signup() {
           )}
 
           {/* Submit Button */}
-          <button
-            onClick={handleSubmit}
-            disabled={loading}
-            style={{
-              ...styles.signupBtn,
-              ...(loading ? styles.signupBtnDisabled : {}),
-            }}
-            onMouseEnter={(e) => {
-              if (!loading) {
-                e.target.style.background = "linear-gradient(135deg, #0036d3, #5a3dff)";
-                e.target.style.transform = "translateY(-2px)";
-                e.target.style.boxShadow = "0 10px 30px rgba(27, 76, 251, 0.4)";
-              }
-            }}
-            onMouseLeave={(e) => {
-              if (!loading) {
-                e.target.style.background = "linear-gradient(135deg, #1b4cfb, #6a5bff)";
-                e.target.style.transform = "translateY(0)";
-                e.target.style.boxShadow = "0 6px 20px rgba(27, 76, 251, 0.3)";
-              }
-            }}
-          >
+          <button type="submit" disabled={loading} style={{ ...styles.signupBtn, ...(loading ? styles.signupBtnDisabled : {}) }}>
             {loading ? (
               <span style={styles.loadingText}>
-                <span style={styles.spinner}></span>
-                Mendaftar...
+                <span style={styles.spinner}></span>Mendaftar...
               </span>
             ) : (
               "Daftar Sekarang"
             )}
           </button>
-        </div>
+        </form>
 
         {/* Footer */}
         <div style={styles.footer}>
           <p style={styles.footerText}>
             Sudah punya akun?{" "}
-            <button
-              type="button"
-              onClick={() => (window.location.href = "/login")}
-              style={{
-                ...styles.loginLink,
-                background: "none",
-                border: "none",
-                padding: 0,
-                cursor: "pointer",
-                font: "inherit",
-              }}
-              onMouseEnter={(e) => (e.target.style.textDecoration = "underline")}
-              onMouseLeave={(e) => (e.target.style.textDecoration = "none")}
-            >
+            <button type="button" onClick={() => navigate("/login")} style={{ ...styles.loginLink, background: "none", border: "none", padding: 0, cursor: "pointer", font: "inherit" }}>
               Masuk di sini
             </button>
           </p>
@@ -329,7 +307,11 @@ function Signup() {
   );
 }
 
+/* ==================================================
+   Styles: paste all your existing styles here (unchanged)
+   ================================================== */
 const styles = {
+  /* ... SALIN SELURUH styles dari filemu yang lama ... */
   signupPage: {
     display: "flex",
     justifyContent: "center",
@@ -550,26 +532,12 @@ const styles = {
   },
 };
 
+/* small runtime CSS for animations */
 const styleSheet = document.createElement("style");
 styleSheet.textContent = `
   @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
-  
-  @keyframes fadeInUp {
-    from {
-      opacity: 0;
-      transform: translateY(30px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-  
-  @keyframes spin {
-    to {
-      transform: rotate(360deg);
-    }
-  }
+  @keyframes fadeInUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+  @keyframes spin { to { transform: rotate(360deg); } }
 `;
 document.head.appendChild(styleSheet);
 
